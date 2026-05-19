@@ -16,6 +16,7 @@ export const t = {
     vehicles: "Voertuigen",
     admin: "Beheer",
     users: "Gebruikers",
+    exports: "Exporteren",
     signOut: "Afmelden",
   },
 
@@ -160,6 +161,30 @@ export const t = {
       wrongType: "Alleen afbeeldingen zijn toegestaan.",
       delete: "Foto verwijderen",
       deleteConfirm: "Deze foto verwijderen?",
+    },
+  },
+
+  exports: {
+    title: "Exporteren naar CSV",
+    subtitle:
+      "Download een snapshot van de gegevens. Bestanden openen rechtstreeks in Excel (nl-BE).",
+    download: "Download CSV",
+    formatNote:
+      "Formaat: UTF-8 met BOM, kolommen gescheiden door puntkomma's, datums als JJJJ-MM-DD UU:MM.",
+    vehicles: {
+      title: "Voertuigen",
+      description:
+        "Alle wagens, gearchiveerd inbegrepen. Klantnaam en GSM zijn persoonlijke gegevens — bewaar het bestand veilig.",
+    },
+    maintenance: {
+      title: "Onderhoudsbeurten",
+      description:
+        "Alle beurten met datum, kilometerstand, olie, opmerkingen en wie ze registreerde.",
+    },
+    parts: {
+      title: "Onderdelen",
+      description:
+        "Alle gebruikte onderdelen per beurt — categorie, OEM-nummer, merk en leverancier.",
     },
   },
 

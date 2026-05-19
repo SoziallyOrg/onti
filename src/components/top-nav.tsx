@@ -40,9 +40,20 @@ export function TopNav({
             {t.nav.vehicles}
           </Link>
           {user.role === "ADMIN" ? (
-            <Link href="/admin/users" className="text-fg-subtle hover:text-fg">
-              {t.nav.admin}
-            </Link>
+            <>
+              <Link
+                href="/admin/users"
+                className="text-fg-subtle hover:text-fg"
+              >
+                {t.nav.users}
+              </Link>
+              <Link
+                href="/admin/export"
+                className="text-fg-subtle hover:text-fg"
+              >
+                {t.nav.exports}
+              </Link>
+            </>
           ) : null}
         </nav>
 
