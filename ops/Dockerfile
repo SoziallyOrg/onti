@@ -4,11 +4,9 @@ WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@11 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY prisma ./prisma/
-# Override pnpm's onlyBuiltDependencies to allow ALL packages to run
-# their install scripts inside Docker. This is safe because we control
-# the lockfile content (no untrusted deps). The wildcard '*' means
-# "allow every package to build".
-RUN echo 'onlyBuiltDependencies:\n  - "*"' > pnpm-workspace.yaml && \
+# Override pnpm's build-script whitelist so sharp/prisma/esbuild compile.
+# Safe in Docker because we control the lockfile.
+RUN printf 'onlyBuiltDependencies:\n  - "*"\nverifyDepsBeforeRun: false\n' > pnpm-workspace.yaml && \
     pnpm install --frozen-lockfile --prod=false
 
 # ─── Stage 2: Build the Next.js standalone bundle ─────────────────────
