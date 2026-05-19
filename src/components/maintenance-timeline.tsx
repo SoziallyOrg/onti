@@ -117,6 +117,32 @@ export function MaintenanceTimeline({
               </ul>
             </details>
           ) : null}
+
+          {e.photos.length > 0 ? (
+            <ul className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-5 md:grid-cols-6">
+              {e.photos.map((p) => (
+                <li
+                  key={p.id}
+                  className="bg-border/30 aspect-square overflow-hidden rounded border border-border"
+                >
+                  <a
+                    href={`/api/photos/${p.filename}`}
+                    target="_blank"
+                    rel="noopener"
+                    className="block h-full w-full"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/api/photos/${p.filename}`}
+                      alt={p.caption ?? ""}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </li>
       ))}
     </ol>

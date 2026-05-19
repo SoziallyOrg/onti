@@ -147,6 +147,20 @@ export const t = {
       deleted: "Onderhoudsbeurt verwijderd.",
       forbidden: "Alleen de aanmaker of een beheerder kan deze beurt bewerken.",
     },
+    photos: {
+      title: "Foto's",
+      none: "Nog geen foto's bij deze beurt.",
+      add: "Foto's toevoegen",
+      uploadHint:
+        "Maximaal 10 foto's per beurt, 8 MB per foto. JPEG, PNG, HEIC en WebP zijn OK.",
+      uploading: "Foto's worden verwerkt…",
+      uploadError: "Eén of meer foto's konden niet verwerkt worden.",
+      tooMany: "Maximaal 10 foto's per beurt.",
+      tooLarge: "Een of meer bestanden zijn groter dan 8 MB.",
+      wrongType: "Alleen afbeeldingen zijn toegestaan.",
+      delete: "Foto verwijderen",
+      deleteConfirm: "Deze foto verwijderen?",
+    },
   },
 
   errors: {

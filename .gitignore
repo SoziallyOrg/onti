@@ -29,6 +29,9 @@ pnpm-debug.log*
 .env.*.local
 !.env.example
 
+# Locally-stored uploaded photos (mounted as a Docker volume in prod)
+photos/
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts

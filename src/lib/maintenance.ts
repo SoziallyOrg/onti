@@ -18,6 +18,14 @@ export type PartUsedView = {
   notes: string | null;
 };
 
+export type PhotoView = {
+  id: string;
+  filename: string;
+  mimeType: string;
+  sizeBytes: number;
+  caption: string | null;
+};
+
 export type MaintenanceEntryView = {
   id: string;
   vehicleId: string;
@@ -30,6 +38,7 @@ export type MaintenanceEntryView = {
   updatedAt: Date;
   createdBy: { id: string; name: string };
   parts: PartUsedView[];
+  photos: PhotoView[];
 };
 
 const entrySelect = {
@@ -51,6 +60,16 @@ const entrySelect = {
       brand: true,
       supplier: true,
       notes: true,
+    },
+    orderBy: { createdAt: "asc" as const },
+  },
+  photos: {
+    select: {
+      id: true,
+      filename: true,
+      mimeType: true,
+      sizeBytes: true,
+      caption: true,
     },
     orderBy: { createdAt: "asc" as const },
   },

@@ -162,3 +162,14 @@ export const updateMaintenanceEntrySchema = maintenanceEntrySchema.extend({
 export type UpdateMaintenanceEntryInput = z.infer<
   typeof updateMaintenanceEntrySchema
 >;
+
+// --- Photos ---------------------------------------------------------
+
+export const photoCaptionSchema = z.object({
+  photoId: z.string().min(1),
+  caption: optionalString(200),
+});
+
+export const removePhotoSchema = z.object({
+  photoId: z.string().min(1),
+});
