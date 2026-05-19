@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Onti Banden brand tokens.
+ * Source: published design tokens from onti-banden.be (May 2026).
+ * Kept verbatim where possible so the internal app feels consistent
+ * with the public site even though typography differs (see README).
+ */
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #000000;
+  --color-surface2: #a1a1a1;
+  --color-primary: #ecb51b;
+  --color-accent: #111111;
+  --color-border: #ededed;
+  --color-border-strong: #d6d6d6;
+  --color-fg: #000000;
+  --color-fg-muted: #111111;
+  --color-fg-inverse: #e94615;
+  --color-fg-4: #0000ee;
+  --color-fg-5: #ffffff;
+  --color-fg-6: #292929;
+  --color-fg-7: #545454;
+  --color-fg-8: #116dff;
+  --color-on-primary: #000000;
+  --color-on-accent: #ffffff;
+  --color-primary-hover: #dda60c;
+  --color-primary-active: #d39c02;
+  --color-info: #2868a8;
+  --color-on-info: #ffffff;
+  --color-success: #2f8a5b;
+  --color-on-success: #ffffff;
+  --color-warning: #9e7422;
+  --color-on-warning: #ffffff;
+  --color-danger: #a13d34;
+  --color-on-danger: #ffffff;
+  --color-focus-ring: #ecb51b;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    font-feature-settings: "ss01", "cv01", "cv11";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-semibold tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  /* Always show a visible focus ring for keyboard users — the workshop
+     uses a mix of touch, mouse and keyboard. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+  }
+}
