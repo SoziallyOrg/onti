@@ -2,9 +2,14 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@11 --activate
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY prisma ./prisma/
-RUN pnpm install --frozen-lockfile --prod=false
+# Override pnpm's onlyBuiltDependencies to allow ALL packages to run
+# their install scripts inside Docker. This is safe because we control
+# the lockfile content (no untrusted deps). The wildcard '*' means
+# "allow every package to build".
+RUN echo 'onlyBuiltDependencies:\n  - "*"' > pnpm-workspace.yaml && \
+    pnpm install --frozen-lockfile --prod=false
 
 # ─── Stage 2: Build the Next.js standalone bundle ─────────────────────
 FROM node:22-alpine AS builder

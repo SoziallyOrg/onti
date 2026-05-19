@@ -1,13 +1,4 @@
-allowBuilds:
-  '@prisma/client': set this to true or false
-  '@prisma/engines': set this to true or false
-  esbuild: set this to true or false
-  prisma: set this to true or false
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
-
-# pnpm 11+ reads workspace-level settings from this file.
-# Used here only to whitelist post-install scripts that we trust.
+# pnpm 11+ workspace settings.
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver
@@ -16,6 +7,4 @@ onlyBuiltDependencies:
   - "@prisma/engines"
   - esbuild
 
-# Don't auto-run `pnpm install` before every script invocation.
-# Useful in CI and lightweight `pnpm typecheck` / `pnpm lint` calls.
 verifyDepsBeforeRun: false
