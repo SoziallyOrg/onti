@@ -107,3 +107,58 @@ export type UpdateVehicleInput = z.infer<typeof updateVehicleSchema>;
 export const searchSchema = z.object({
   q: z.string().trim().max(100),
 });
+
+// --- Maintenance entries + parts ------------------------------------
+
+const partCategories = [
+  "OIL_FILTER",
+  "AIR_FILTER",
+  "CABIN_FILTER",
+  "FUEL_FILTER",
+  "BRAKE_PAD",
+  "BRAKE_DISC",
+  "OTHER",
+] as const;
+
+export const partUsedSchema = z.object({
+  category: z.enum(partCategories),
+  oemNumber: optionalString(80),
+  brand: optionalString(80),
+  supplier: optionalString(80),
+  notes: optionalString(200),
+});
+export type PartUsedInput = z.infer<typeof partUsedSchema>;
+
+export const partsListSchema = z.array(partUsedSchema).max(30);
+
+export const maintenanceEntrySchema = z.object({
+  vehicleId: z.string().min(1),
+  // date input gives "YYYY-MM-DD" — coerce to Date and reject blanks.
+  date: z.string().min(1, "Datum is verplicht.").pipe(z.coerce.date()),
+  km: z.coerce
+    .number()
+    .int("Geheel getal.")
+    .min(0, "Negatieve kilometerstand kan niet.")
+    .max(2_000_000, "Lijkt te hoog."),
+  oilType: optionalString(80),
+  oilLiters: z
+    .union([
+      z.literal(""),
+      z.coerce
+        .number()
+        .min(0, "Negatieve hoeveelheid kan niet.")
+        .max(99.99, "Maximaal 99,99 L."),
+    ])
+    .optional()
+    .transform((v) => (v === "" || v === undefined ? undefined : v)),
+  notes: optionalString(5000),
+  parts: partsListSchema,
+});
+export type MaintenanceEntryInput = z.infer<typeof maintenanceEntrySchema>;
+
+export const updateMaintenanceEntrySchema = maintenanceEntrySchema.extend({
+  id: z.string().min(1),
+});
+export type UpdateMaintenanceEntryInput = z.infer<
+  typeof updateMaintenanceEntrySchema
+>;

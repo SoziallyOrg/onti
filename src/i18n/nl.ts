@@ -106,6 +106,49 @@ export const t = {
     },
   },
 
+  maintenance: {
+    title: "Onderhoudsbeurten",
+    new: "Onderhoud toevoegen",
+    edit: "Onderhoud bewerken",
+    delete: "Verwijderen",
+    deleteConfirm:
+      "Deze onderhoudsbeurt verwijderen? Dit kan niet ongedaan gemaakt worden.",
+    by: "door",
+    fields: {
+      date: "Datum",
+      km: "Kilometerstand",
+      oilType: "Olietype",
+      oilLiters: "Aantal liter",
+      notes: "Technische opmerkingen",
+    },
+    parts: {
+      title: "Onderdelen",
+      empty: "Geen onderdelen geregistreerd voor deze beurt.",
+      add: "Onderdeel toevoegen",
+      remove: "Verwijderen",
+      category: "Categorie",
+      oemNumber: "OEM-nummer",
+      brand: "Merk",
+      supplier: "Leverancier",
+      partNote: "Notitie",
+    },
+    categories: {
+      OIL_FILTER: "Oliefilter",
+      AIR_FILTER: "Luchtfilter",
+      CABIN_FILTER: "Cabinefilter",
+      FUEL_FILTER: "Brandstoffilter",
+      BRAKE_PAD: "Remblok",
+      BRAKE_DISC: "Remschijf",
+      OTHER: "Andere",
+    },
+    actions: {
+      created: "Onderhoudsbeurt toegevoegd.",
+      updated: "Wijzigingen bewaard.",
+      deleted: "Onderhoudsbeurt verwijderd.",
+      forbidden: "Alleen de aanmaker of een beheerder kan deze beurt bewerken.",
+    },
+  },
+
   errors: {
     unknown: "Er ging iets mis. Probeer opnieuw.",
     forbidden: "Geen toegang tot deze pagina.",

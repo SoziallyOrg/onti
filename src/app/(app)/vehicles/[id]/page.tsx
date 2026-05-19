@@ -1,15 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Pencil, Archive, ArchiveRestore, Phone, Wrench } from "lucide-react";
+import {
+  Pencil,
+  Archive,
+  ArchiveRestore,
+  Phone,
+  Wrench,
+  Plus,
+} from "lucide-react";
 import { requireUser } from "@/lib/auth-helpers";
 import { getVehicleById } from "@/lib/vehicles";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { listEntriesForVehicle } from "@/lib/maintenance";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  MaintenanceTimeline,
+  canUserEditEntry,
+} from "@/components/maintenance-timeline";
 import { formatDate } from "@/lib/format";
 import { t } from "@/i18n/nl";
 import { toggleArchiveVehicle } from "../actions";
@@ -28,10 +35,12 @@ export default async function VehicleDetailPage({
 }: {
   params: Params;
 }) {
-  await requireUser();
+  const user = await requireUser();
   const { id } = await params;
   const v = await getVehicleById(id);
   if (!v) notFound();
+
+  const entries = await listEntriesForVehicle(v.id);
 
   return (
     <main className="container max-w-3xl py-8">
@@ -150,19 +159,27 @@ export default async function VehicleDetailPage({
         </Card>
       </div>
 
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
+      <section className="mt-6">
+        <header className="mb-3 flex flex-wrap items-end justify-between gap-2">
+          <h2 className="flex items-center gap-2">
             <Wrench className="h-5 w-5 text-primary" aria-hidden />
             {t.vehicles.detail.timelineTitle}
-          </CardTitle>
-          <CardDescription>{t.vehicles.detail.timelineEmpty}</CardDescription>
-        </CardHeader>
-        <Button variant="outline" disabled>
-          <Wrench className="h-4 w-4" aria-hidden />{" "}
-          {t.vehicles.detail.addEntry}
-        </Button>
-      </Card>
+          </h2>
+          <Button asChild size="sm">
+            <Link href={`/vehicles/${v.id}/maintenance/new`}>
+              <Plus className="h-4 w-4" aria-hidden /> {t.maintenance.new}
+            </Link>
+          </Button>
+        </header>
+
+        <MaintenanceTimeline
+          vehicleId={v.id}
+          entries={entries}
+          canEdit={(entry) =>
+            canUserEditEntry({ id: user.id, role: user.role }, entry)
+          }
+        />
+      </section>
     </main>
   );
 }
