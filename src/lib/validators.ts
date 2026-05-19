@@ -129,7 +129,15 @@ export const partUsedSchema = z.object({
 });
 export type PartUsedInput = z.infer<typeof partUsedSchema>;
 
-export const partsListSchema = z.array(partUsedSchema).max(30);
+export const partsListSchema = z
+  .array(partUsedSchema)
+  .max(30)
+  .transform(
+    // Filter out parts where nothing meaningful was filled in —
+    // just a default category with all fields empty is not a real part.
+    (parts) =>
+      parts.filter((p) => p.oemNumber || p.brand || p.supplier || p.notes),
+  );
 
 export const maintenanceEntrySchema = z.object({
   vehicleId: z.string().min(1),

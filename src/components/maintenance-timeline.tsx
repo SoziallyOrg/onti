@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Pencil } from "lucide-react";
+import { Pencil, Camera } from "lucide-react";
 import type { MaintenanceEntryView } from "@/lib/maintenance";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatKm } from "@/lib/format";
@@ -72,6 +72,21 @@ export function MaintenanceTimeline({
                       <Pencil className="h-4 w-4" aria-hidden />
                       <span className="sr-only sm:not-sr-only sm:ml-1">
                         {t.vehicles.edit}
+                      </span>
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="min-h-[44px] min-w-[44px] px-2"
+                  >
+                    <Link
+                      href={`/vehicles/${vehicleId}/maintenance/${e.id}/edit#photos`}
+                    >
+                      <Camera className="h-4 w-4" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:ml-1">
+                        Foto
                       </span>
                     </Link>
                   </Button>

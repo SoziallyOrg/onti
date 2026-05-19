@@ -152,4 +152,6 @@ export async function toggleArchiveVehicle(formData: FormData): Promise<void> {
   revalidatePath("/vehicles");
   revalidatePath(`/vehicles/${id}`);
   revalidatePath("/");
+  // Redirect back to force a full page refresh with the new state
+  redirect(`/vehicles/${id}`);
 }

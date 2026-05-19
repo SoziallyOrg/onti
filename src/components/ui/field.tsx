@@ -3,15 +3,14 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 /**
- * Label + input + error combo. Keeps form pages from drowning in
- * boilerplate. For controls that aren't `<input>` (textarea, select)
- * compose the primitives by hand.
+ * Label + input + error combo. Required fields show a red asterisk.
  */
 export function Field({
   id,
   label,
   hint,
   error,
+  required,
   className,
   ...inputProps
 }: {
@@ -23,9 +22,24 @@ export function Field({
 } & Omit<InputProps, "id">) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <Label htmlFor={id}>{label}</Label>
-      <Input id={id} name={id} aria-invalid={!!error} {...inputProps} />
-      {hint && !error ? <p className="text-xs text-fg-subtle">{hint}</p> : null}
+      <Label htmlFor={id}>
+        {label}
+        {required ? (
+          <span className="ml-0.5 text-danger" aria-hidden>
+            *
+          </span>
+        ) : null}
+      </Label>
+      <Input
+        id={id}
+        name={id}
+        required={required}
+        aria-invalid={!!error}
+        {...inputProps}
+      />
+      {hint && !error ? (
+        <p className="text-xs text-fg-subtle">{hint}</p>
+      ) : null}
       {error ? <p className="text-sm text-danger">{error}</p> : null}
     </div>
   );
