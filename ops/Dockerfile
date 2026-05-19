@@ -20,11 +20,8 @@ RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/sharp ./node_modules/sharp
-RUN mkdir -p /app/photos && chown -R nextjs:nodejs /app/photos /app/.next
+COPY --from=builder /app/node_modules ./node_modules
+RUN mkdir -p /app/photos && chown -R nextjs:nodejs /app
 ENV PHOTOS_DIR=/app/photos
 USER nextjs
 EXPOSE 3000
