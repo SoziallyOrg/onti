@@ -1,0 +1,31 @@
+# Local development database only.
+# The production stack (app + Caddy + db together) lives in ops/docker-compose.yml
+# and is added in PR #6 (deployment).
+#
+# Usage:
+#   pnpm db:up      # start Postgres in the background
+#   pnpm db:down    # stop and keep the volume
+#
+# Connection string for .env:
+#   DATABASE_URL=postgresql://onti:onti@localhost:5432/onti?schema=public
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: onti-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: onti
+      POSTGRES_PASSWORD: onti
+      POSTGRES_DB: onti
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onti -d onti"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

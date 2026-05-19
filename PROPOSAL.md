@@ -17,29 +17,35 @@ Het belangrijkste werkpunt: wanneer een wagen terugkomt, typ je de nummerplaat o
 ## 2. Wat het systeem voor je doet
 
 ### Voertuigen
+
 - Voertuigfiche per wagen met nummerplaat, VIN, merk, model, motor, bouwjaar, klantnaam en GSM-nummer.
 - Zoeken op nummerplaat **of** chassisnummer in één zoekbalk, met tikfout-tolerantie.
 - Resultaat zichtbaar binnen één seconde, ook op een gsm of tablet in de werkplaats.
 
 ### Onderhoudsbeurten
+
 - Per beurt: datum, kilometerstand, olietype, aantal liter, technische opmerkingen.
 - Onbeperkt aantal onderdelen per beurt: filter (olie/lucht/cabine/brandstof), remblok, remschijf of "andere".
 - Per onderdeel: categorie, OEM/OEN-nummer, merk, leverancier en eventueel een nota.
 - Automatische suggesties bij OEM-nummers en merken op basis van vorige beurten — minder typwerk, minder tikfouten.
 
 ### Foto's
+
 - Optioneel foto's bij een onderhoudsbeurt toevoegen (bv. foto van een versleten remblok als bewijs voor de klant).
 - Direct uploaden vanaf een smartphone in de werkplaats.
 
 ### Gebruikers
+
 - Eén beheerder (eigenaar) die gebruikersaccounts aanmaakt en wachtwoorden kan resetten.
 - Meerdere monteurs met eigen login.
 - Geen publieke registratie — enkel interne gebruikers.
 
 ### Export
+
 - Eén klik om alle voertuigen, onderhoudsbeurten of onderdelen naar Excel/CSV te exporteren.
 
 ### Toegang
+
 - Werkt op pc, tablet en smartphone via dezelfde URL.
 - Beveiligde verbinding (HTTPS) op een eigen domeinnaam.
 
@@ -57,29 +63,29 @@ Het belangrijkste werkpunt: wanneer een wagen terugkomt, typ je de nummerplaat o
 
 ## 4. Investering
 
-| | Bedrag (excl. 21% btw) |
-|---|---|
-| **Eenmalige ontwikkeling** | **€4.375** |
-| **Onderhoud & ondersteuning per maand** | **€150** |
-| Domeinnaam (jaarlijks, rechtstreeks bij registrar) | ± €15 |
-| Cloud back-up opslag | gratis (Backblaze B2 free tier) |
+|                                                    | Bedrag (excl. 21% btw)          |
+| -------------------------------------------------- | ------------------------------- |
+| **Eenmalige ontwikkeling**                         | **€4.375**                      |
+| **Onderhoud & ondersteuning per maand**            | **€150**                        |
+| Domeinnaam (jaarlijks, rechtstreeks bij registrar) | ± €15                           |
+| Cloud back-up opslag                               | gratis (Backblaze B2 free tier) |
 
 Bedragen worden vermeerderd met 21% btw.
 
 ### Wat zit er in de eenmalige €4.375?
 
-| Onderdeel | Inbegrepen |
-|---|---|
-| Analyse, ontwerp en projectbegeleiding | Ja |
-| Volledige ontwikkeling van het systeem (alle functies hierboven) | Ja |
-| Foto-uploads bij onderhoudsbeurten | Ja |
-| Beveiligde login en gebruikersbeheer | Ja |
-| Installatie op de Hostinger VPS, inclusief firewall en HTTPS | Ja |
-| Configuratie van automatische versleutelde back-ups | Ja |
-| Test van het volledige back-up- en herstelproces vóór oplevering | Ja |
-| Eén opleidingssessie van 1 uur (op locatie of online) | Ja |
-| Schriftelijke handleiding in het Nederlands | Ja |
-| 30 dagen gratis nazorg na oplevering voor bugfixes | Ja |
+| Onderdeel                                                        | Inbegrepen |
+| ---------------------------------------------------------------- | ---------- |
+| Analyse, ontwerp en projectbegeleiding                           | Ja         |
+| Volledige ontwikkeling van het systeem (alle functies hierboven) | Ja         |
+| Foto-uploads bij onderhoudsbeurten                               | Ja         |
+| Beveiligde login en gebruikersbeheer                             | Ja         |
+| Installatie op de Hostinger VPS, inclusief firewall en HTTPS     | Ja         |
+| Configuratie van automatische versleutelde back-ups              | Ja         |
+| Test van het volledige back-up- en herstelproces vóór oplevering | Ja         |
+| Eén opleidingssessie van 1 uur (op locatie of online)            | Ja         |
+| Schriftelijke handleiding in het Nederlands                      | Ja         |
+| 30 dagen gratis nazorg na oplevering voor bugfixes               | Ja         |
 
 ### Waarom deze prijs?
 
@@ -88,6 +94,7 @@ Maatwerk is geen abonnement. Een vergelijkbaar bestaand systeem als SaaS (bv. ee
 Met dit voorstel betaal je eenmalig de bouw, blijft alles eigendom van Onti Banden, en is er geen risico op plotse prijsverhogingen of een leverancier die de stekker uittrekt.
 
 Concreet zit in de eenmalige prijs:
+
 - Ongeveer 7 werkdagen ontwikkeling op maat.
 - Volledige opzet en beveiliging van de server (geen losse rekening voor "installatiekosten").
 - Een correct opgezet, geteste back-up systeem — zodat een verloren computer of een crash nooit klantdata kost.
@@ -98,15 +105,15 @@ Dit is een eerlijk middensegment tarief voor maatwerk in Vlaanderen door een erv
 
 ### Wat zit er in de €150 per maand?
 
-| Onderdeel | Inbegrepen |
-|---|---|
-| **2 uur per maand** voor kleine aanpassingen, vragen of bugfixes | Ja |
-| Maandelijkse veiligheidsupdates van de server | Ja |
-| Maandelijkse herstelproef van de back-ups | Ja |
-| Monitoring dat de dagelijkse back-up effectief uitgevoerd is | Ja |
-| Verlenging van HTTPS-certificaten en domeinconfiguratie | Ja |
-| Updates van de softwarebibliotheken bij beveiligingsmeldingen | Ja |
-| Reactie binnen 2 werkdagen op support-vragen via e-mail | Ja |
+| Onderdeel                                                        | Inbegrepen |
+| ---------------------------------------------------------------- | ---------- |
+| **2 uur per maand** voor kleine aanpassingen, vragen of bugfixes | Ja         |
+| Maandelijkse veiligheidsupdates van de server                    | Ja         |
+| Maandelijkse herstelproef van de back-ups                        | Ja         |
+| Monitoring dat de dagelijkse back-up effectief uitgevoerd is     | Ja         |
+| Verlenging van HTTPS-certificaten en domeinconfiguratie          | Ja         |
+| Updates van de softwarebibliotheken bij beveiligingsmeldingen    | Ja         |
+| Reactie binnen 2 werkdagen op support-vragen via e-mail          | Ja         |
 
 Werk dat boven de 2 inbegrepen uren gaat, wordt aangerekend aan **€95/uur** in blokken van 15 minuten. Niet-inbegrepen zijn nieuwe functionaliteiten (zie volgende sectie).
 
@@ -133,12 +140,12 @@ Deze functies houden we expliciet buiten dit eerste systeem om de scope eenvoudi
 
 ## 6. Tijdslijn
 
-| Mijlpaal | Termijn |
-|---|---|
-| Ondertekening offerte + voorschot | Dag 0 |
-| Eerste werkende versie online (testlink) | Week 2 |
-| Oplevering, opleiding en go-live | Week 3 |
-| Einde gratis nazorgperiode | Week 7 |
+| Mijlpaal                                 | Termijn |
+| ---------------------------------------- | ------- |
+| Ondertekening offerte + voorschot        | Dag 0   |
+| Eerste werkende versie online (testlink) | Week 2  |
+| Oplevering, opleiding en go-live         | Week 3  |
+| Einde gratis nazorgperiode               | Week 7  |
 
 Voorwaarde voor deze termijn: domeinnaam geregistreerd en VPS-toegang beschikbaar binnen de eerste week.
 
@@ -146,11 +153,11 @@ Voorwaarde voor deze termijn: domeinnaam geregistreerd en VPS-toegang beschikbaa
 
 ## 7. Betalingsvoorwaarden
 
-| Schijf | Bedrag (excl. btw) | Wanneer |
-|---|---|---|
-| 40% voorschot | €1.750 | Bij ondertekening |
-| 40% bij eerste live versie | €1.750 | Bij oplevering testlink |
-| 20% bij definitieve oplevering | €875 | Na opleiding en go-live |
+| Schijf                         | Bedrag (excl. btw) | Wanneer                 |
+| ------------------------------ | ------------------ | ----------------------- |
+| 40% voorschot                  | €1.750             | Bij ondertekening       |
+| 40% bij eerste live versie     | €1.750             | Bij oplevering testlink |
+| 20% bij definitieve oplevering | €875               | Na opleiding en go-live |
 
 Betalingstermijn: **14 dagen** na factuurdatum. Maandelijkse onderhoudsfactuur start de maand **na** go-live.
 
@@ -169,4 +176,4 @@ Betalingstermijn: **14 dagen** na factuurdatum. Maandelijkse onderhoudsfactuur s
 
 ---
 
-*Deze offerte is opgesteld op basis van het functioneel overzicht in de begeleidende specificatie. Wijzigingen aan de scope worden in onderling overleg ingepland en, indien van toepassing, afzonderlijk geofferd.*
+_Deze offerte is opgesteld op basis van het functioneel overzicht in de begeleidende specificatie. Wijzigingen aan de scope worden in onderling overleg ingepland en, indien van toepassing, afzonderlijk geofferd._

@@ -1,0 +1,125 @@
+// Onti Garage — database schema.
+//
+// Source of truth for the data model. Generated docs in:
+//   .kiro/specs/onti-garage/design.md  (matching Prisma block)
+//
+// Conventions:
+// - cuid() string ids (URL-safe, sortable enough)
+// - createdAt + updatedAt on every mutable record (audit baseline)
+// - soft delete via `archived` flag where useful (Vehicle); hard delete elsewhere
+// - VIN is the canonical vehicle identity; plate is mutable
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pg_trgm]
+}
+
+enum Role {
+  ADMIN
+  MECHANIC
+}
+
+enum PartCategory {
+  OIL_FILTER
+  AIR_FILTER
+  CABIN_FILTER
+  FUEL_FILTER
+  BRAKE_PAD
+  BRAKE_DISC
+  OTHER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(MECHANIC)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  maintenanceEntries MaintenanceEntry[]
+
+  @@index([email])
+}
+
+model Vehicle {
+  id            String   @id @default(cuid())
+  vin           String   @unique
+  plate         String
+  make          String
+  model         String
+  engine        String?
+  modelYear     Int?
+  customerName  String
+  customerPhone String?
+  archived      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  maintenanceEntries MaintenanceEntry[]
+
+  @@index([plate])
+  @@index([vin])
+  @@index([archived])
+}
+
+model MaintenanceEntry {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  date        DateTime
+  km          Int
+  oilType     String?
+  oilLiters   Decimal? @db.Decimal(4, 2)
+  notes       String?
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parts  PartUsed[]
+  photos Photo[]
+
+  // Most lookups are "give me the timeline for this vehicle, newest first".
+  @@index([vehicleId, date(sort: Desc)])
+}
+
+model PartUsed {
+  id            String           @id @default(cuid())
+  maintenanceId String
+  maintenance   MaintenanceEntry @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
+  category      PartCategory
+  oemNumber     String?
+  brand         String?
+  supplier      String?
+  notes         String?
+  createdAt     DateTime         @default(now())
+
+  @@index([maintenanceId])
+  // For autocomplete suggestions when typing OEM numbers.
+  @@index([oemNumber])
+  @@index([brand])
+}
+
+model Photo {
+  id            String           @id @default(cuid())
+  maintenanceId String
+  maintenance   MaintenanceEntry @relation(fields: [maintenanceId], references: [id], onDelete: Cascade)
+  // UUID-based filename on disk — actual file lives in the photos volume,
+  // never inside the DB.
+  filename      String
+  mimeType      String
+  sizeBytes     Int
+  caption       String?
+  createdAt     DateTime         @default(now())
+
+  @@index([maintenanceId])
+}
