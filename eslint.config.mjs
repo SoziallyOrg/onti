@@ -1,12 +1,16 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import next from "eslint-config-next";
+import tseslint from "typescript-eslint";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
+/**
+ * ESLint flat config.
+ *
+ * Next.js 16+ ships `eslint-config-next` as a native flat-config array,
+ * so we no longer need `FlatCompat`. The shared config already includes
+ * sensible TypeScript, React and a11y defaults plus its own ignores.
+ *
+ * Flat config requires plugins to be declared in the same block as their
+ * rule overrides — that's why we re-register `@typescript-eslint` below.
+ */
 const config = [
   {
     ignores: [
@@ -19,8 +23,10 @@ const config = [
       "coverage/**",
     ],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...next,
   {
+    files: ["**/*.{ts,tsx}"],
+    plugins: { "@typescript-eslint": tseslint.plugin },
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "warn",
