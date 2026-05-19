@@ -9,7 +9,6 @@ import { requireUser } from "@/lib/auth-helpers";
 import {
   maintenanceEntrySchema,
   updateMaintenanceEntrySchema,
-  partsListSchema,
 } from "@/lib/validators";
 import {
   ALLOWED_MIME_TYPES,
@@ -328,6 +327,3 @@ export async function deletePhoto(formData: FormData): Promise<void> {
     `/vehicles/${photo.maintenance.vehicleId}/maintenance/${photo.maintenance.id}/edit`
   );
 }
-
-// Re-exported for use elsewhere (if needed).
-export { partsListSchema };
