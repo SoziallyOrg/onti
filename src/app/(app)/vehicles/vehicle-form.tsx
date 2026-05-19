@@ -136,8 +136,8 @@ export function VehicleForm({
         </p>
       ) : null}
 
-      <div className="flex justify-end gap-2 pt-2">
-        <Button asChild variant="ghost">
+      <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+        <Button asChild variant="ghost" className="w-full sm:w-auto">
           <Link
             href={
               mode === "edit" && defaults.id
@@ -148,7 +148,7 @@ export function VehicleForm({
             {t.users.cancel}
           </Link>
         </Button>
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
           {pending
             ? t.users.creating
             : mode === "create"

@@ -36,38 +36,49 @@ export function MaintenanceTimeline({
   }
 
   return (
-    <ol className="space-y-4">
+    <ol className="space-y-3 md:space-y-4">
       {entries.map((e) => (
         <li
           key={e.id}
-          className="rounded-lg border border-border bg-bg p-4 shadow-sm"
+          className="rounded-lg border border-border bg-bg p-3 shadow-sm md:p-4"
         >
-          <header className="mb-3 flex flex-wrap items-start justify-between gap-2">
-            <div>
-              <p className="text-base font-semibold">
-                {formatDate(e.date)}
-                <span className="ml-2 font-normal text-fg-subtle">
-                  · {formatKm(e.km)}
-                </span>
-              </p>
-              <p className="text-xs text-fg-subtle">
-                {t.maintenance.by} {e.createdBy.name}
-              </p>
-            </div>
-
-            {canEdit(e) ? (
-              <div className="flex gap-2">
-                <Button asChild variant="ghost" size="sm">
-                  <Link
-                    href={`/vehicles/${vehicleId}/maintenance/${e.id}/edit`}
-                  >
-                    <Pencil className="h-3.5 w-3.5" aria-hidden />{" "}
-                    {t.vehicles.edit}
-                  </Link>
-                </Button>
-                <DeleteEntryButton entryId={e.id} />
+          <header className="mb-3 space-y-2">
+            {/* Date + km: always top-left, large enough to read at a glance */}
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-base font-semibold leading-tight">
+                  {formatDate(e.date)}
+                  <span className="ml-2 font-normal text-fg-subtle">
+                    · {formatKm(e.km)}
+                  </span>
+                </p>
+                <p className="mt-0.5 text-xs text-fg-subtle">
+                  {t.maintenance.by} {e.createdBy.name}
+                </p>
               </div>
-            ) : null}
+
+              {/* Action buttons: min-h-11 (44px) tap target per Apple HIG */}
+              {canEdit(e) ? (
+                <div className="flex gap-1">
+                  <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="min-h-[44px] min-w-[44px] px-2"
+                  >
+                    <Link
+                      href={`/vehicles/${vehicleId}/maintenance/${e.id}/edit`}
+                    >
+                      <Pencil className="h-4 w-4" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:ml-1">
+                        {t.vehicles.edit}
+                      </span>
+                    </Link>
+                  </Button>
+                  <DeleteEntryButton entryId={e.id} />
+                </div>
+              ) : null}
+            </div>
           </header>
 
           {(e.oilType || e.oilLiters !== null) && (
@@ -89,29 +100,33 @@ export function MaintenanceTimeline({
           ) : null}
 
           {e.parts.length > 0 ? (
-            <details className="text-sm" open={e.parts.length <= 3}>
-              <summary className="cursor-pointer font-medium text-fg">
+            <details className="text-sm" open={e.parts.length <= 4}>
+              <summary className="min-h-[44px] cursor-pointer py-2 font-medium text-fg">
                 {t.maintenance.parts.title} ({e.parts.length})
               </summary>
-              <ul className="mt-2 space-y-1">
+              <ul className="mt-1 space-y-2">
                 {e.parts.map((p) => (
                   <li
                     key={p.id}
-                    className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5"
+                    className="border-border/60 bg-border/20 rounded border px-2.5 py-1.5"
                   >
-                    <span className="bg-border/50 rounded px-2 py-0.5 text-xs uppercase tracking-wide text-fg-muted">
-                      {t.maintenance.categories[p.category]}
-                    </span>
-                    {p.oemNumber ? (
-                      <span className="font-mono text-xs">{p.oemNumber}</span>
-                    ) : null}
-                    {p.brand ? <span>{p.brand}</span> : null}
-                    {p.supplier ? (
-                      <span className="text-fg-subtle">via {p.supplier}</span>
-                    ) : null}
-                    {p.notes ? (
-                      <span className="text-fg-subtle">— {p.notes}</span>
-                    ) : null}
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="bg-border/80 rounded px-1.5 py-0.5 text-[11px] uppercase tracking-wide text-fg-muted">
+                        {t.maintenance.categories[p.category]}
+                      </span>
+                      {p.oemNumber ? (
+                        <span className="font-mono text-xs font-medium">
+                          {p.oemNumber}
+                        </span>
+                      ) : null}
+                    </div>
+                    {(p.brand || p.supplier || p.notes) && (
+                      <div className="mt-0.5 flex flex-wrap gap-x-2 text-xs text-fg-subtle">
+                        {p.brand ? <span>{p.brand}</span> : null}
+                        {p.supplier ? <span>via {p.supplier}</span> : null}
+                        {p.notes ? <span>— {p.notes}</span> : null}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>

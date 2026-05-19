@@ -9,8 +9,9 @@ import type { Role } from "@prisma/client";
 /**
  * Top navigation bar shown on every authenticated page.
  *
- * The Vehicles link is a placeholder until PR #4 lands the route.
- * The Admin link is hidden for non-admins so mechanics never see it.
+ * On mobile: logo + full-width search + sign-out. No nav links —
+ * those are handled by the bottom MobileNav.
+ * On desktop: logo + nav links + search (capped width) + user + sign-out.
  */
 export function TopNav({
   user,
@@ -19,7 +20,7 @@ export function TopNav({
 }) {
   return (
     <header className="bg-bg/95 sticky top-0 z-10 border-b border-border backdrop-blur">
-      <div className="container flex h-14 items-center gap-4">
+      <div className="container flex h-14 items-center gap-2 md:gap-4">
         <Link
           href="/"
           className="flex shrink-0 items-center gap-2 text-fg hover:opacity-80"
@@ -32,6 +33,7 @@ export function TopNav({
           </span>
         </Link>
 
+        {/* Desktop nav links — hidden on mobile (bottom nav takes over) */}
         <nav className="hidden items-center gap-4 text-sm md:flex">
           <Link href="/" className="text-fg-subtle hover:text-fg">
             {t.nav.home}
@@ -57,7 +59,8 @@ export function TopNav({
           ) : null}
         </nav>
 
-        <div className="ml-auto flex flex-1 items-center justify-end gap-3">
+        {/* Search bar: full-width on mobile, capped on desktop */}
+        <div className="ml-auto flex flex-1 items-center gap-2 md:gap-3">
           <div className="flex-1 md:max-w-md">
             <SearchBar />
           </div>
@@ -73,7 +76,12 @@ export function TopNav({
               await signOut({ redirectTo: "/login" });
             }}
           >
-            <Button type="submit" variant="ghost" size="sm">
+            <Button
+              type="submit"
+              variant="ghost"
+              size="sm"
+              className="hidden sm:inline-flex"
+            >
               {t.nav.signOut}
             </Button>
           </form>
