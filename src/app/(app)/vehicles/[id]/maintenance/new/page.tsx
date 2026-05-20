@@ -28,7 +28,7 @@ export default async function NewMaintenancePage({
 
   return (
     <main className="container max-w-3xl py-8">
-      <Button asChild variant="ghost" size="sm" className="mb-4">
+      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-3">
         <Link href={`/vehicles/${v.id}`}>{t.vehicles.backToVehicle}</Link>
       </Button>
 

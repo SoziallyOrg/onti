@@ -41,7 +41,7 @@ export default async function ExportPage() {
   ] as const;
 
   return (
-    <main className="container max-w-3xl py-8">
+    <main className="container py-8">
       <header className="mb-6">
         <h1>{t.exports.title}</h1>
         <p className="mt-1 text-fg-subtle">{t.exports.subtitle}</p>

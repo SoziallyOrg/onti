@@ -1,10 +1,37 @@
+"use client";
+
 import Link from "next/link";
-import { Wrench } from "lucide-react";
-import { signOut } from "@/auth";
+import { usePathname } from "next/navigation";
+import { Wrench, Crown } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { t } from "@/i18n/nl";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/search-bar";
+import { cn } from "@/lib/utils";
 import type { Role } from "@prisma/client";
+
+function getHeaderMaxWidth(pathname: string): string {
+  if (pathname === "/admin/users/new") {
+    return "max-w-xl";
+  }
+  if (pathname === "/vehicles/new") {
+    return "max-w-2xl";
+  }
+  
+  if (/\/vehicles\/[^/]+\/edit$/.test(pathname)) {
+    return "max-w-2xl";
+  }
+  
+  if (/\/vehicles\/[^/]+\/maintenance\/new$/.test(pathname)) {
+    return "max-w-3xl";
+  }
+
+  if (/\/vehicles\/[^/]+\/maintenance\/[^/]+\/edit$/.test(pathname)) {
+    return "max-w-3xl";
+  }
+
+  return "max-w-none";
+}
 
 /**
  * Top navigation bar shown on every authenticated page.
@@ -18,9 +45,12 @@ export function TopNav({
 }: {
   user: { name?: string | null; role: Role };
 }) {
+  const pathname = usePathname();
+  const maxWidthClass = getHeaderMaxWidth(pathname);
+
   return (
-    <header className="bg-bg/95 sticky top-0 z-10 border-b border-border backdrop-blur">
-      <div className="container flex h-14 items-center gap-2 md:gap-4">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-bg">
+      <div className={cn("container flex h-14 items-center gap-2 md:gap-4 transition-all duration-200", maxWidthClass)}>
         <Link
           href="/"
           className="flex shrink-0 items-center gap-2 text-fg hover:opacity-80"
@@ -57,11 +87,20 @@ export function TopNav({
               </Link>
             </>
           ) : null}
+          <Link
+            href="/premium"
+            className={cn(
+              "inline-flex items-center gap-1.5 font-semibold text-warning hover:opacity-85 transition-opacity",
+              pathname === "/premium" && "underline underline-offset-4"
+            )}
+          >
+            <Crown className="h-3.5 w-3.5" aria-hidden />
+            <span>Premium</span>
+          </Link>
         </nav>
 
-        {/* Search bar: full-width on mobile, capped on desktop */}
-        <div className="ml-auto flex flex-1 items-center gap-2 md:gap-3">
-          <div className="flex-1 md:max-w-md">
+        <div className="ml-auto flex flex-1 justify-end items-center gap-2 md:gap-3">
+          <div className="w-full md:max-w-md">
             <SearchBar />
           </div>
 
@@ -70,21 +109,14 @@ export function TopNav({
               {user.name}
             </span>
           ) : null}
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/login" });
-            }}
+          <Button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            variant="ghost"
+            size="sm"
+            className="hidden sm:inline-flex"
           >
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              className="hidden sm:inline-flex"
-            >
-              {t.nav.signOut}
-            </Button>
-          </form>
+            {t.nav.signOut}
+          </Button>
         </div>
       </div>
     </header>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
+import { Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
@@ -65,6 +66,7 @@ export function MaintenanceForm({
   const [parts, setParts] = useState<PartDraft[]>(
     defaults.parts && defaults.parts.length > 0 ? defaults.parts : [emptyPart()]
   );
+  const [photoCount, setPhotoCount] = useState(0);
 
   return (
     <form action={formAction} className="space-y-6" noValidate>
@@ -135,6 +137,42 @@ export function MaintenanceForm({
         <h3 className="text-lg font-semibold">{t.maintenance.parts.title}</h3>
         <PartsEditor parts={parts} onChange={setParts} />
       </section>
+
+      {mode === "create" && (
+        <section className="space-y-3 border-t border-border pt-4">
+          <div className="flex items-center gap-2">
+            <Camera className="h-5 w-5 text-primary" aria-hidden />
+            <h3 className="text-lg font-semibold">{t.maintenance.photos.title}</h3>
+          </div>
+          <p className="text-sm text-fg-subtle">
+            {"Selecteer optioneel foto's om direct toe te voegen aan dit onderhoud (maximaal 10)."}
+          </p>
+          <div className="flex items-center gap-3">
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-border-strong bg-bg px-4 py-2 text-sm font-medium text-fg shadow-sm hover:bg-border/30 transition-colors">
+              <Camera className="h-4 w-4 text-fg-subtle" aria-hidden />
+              <span>{"Kies foto's"}</span>
+              <input
+                type="file"
+                name="photos"
+                multiple
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => {
+                  const filesCount = e.target.files?.length ?? 0;
+                  setPhotoCount(filesCount);
+                }}
+              />
+            </label>
+            {photoCount > 0 ? (
+              <span className="text-sm text-success font-medium font-sans">
+                {photoCount} {photoCount === 1 ? "foto geselecteerd" : "foto's geselecteerd"}
+              </span>
+            ) : (
+              <span className="text-sm text-fg-subtle">{"Geen foto's geselecteerd"}</span>
+            )}
+          </div>
+        </section>
+      )}
 
       {!state.ok && state.error ? (
         <p

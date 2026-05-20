@@ -57,7 +57,12 @@ const listSelect = {
  * with a few hundred vehicles per garage that's nothing.
  */
 export async function searchVehicles(
-  rawQuery: string
+  rawQuery: string,
+  {
+    archived = false,
+    make,
+    sort,
+  }: { archived?: boolean; make?: string; sort?: string } = {}
 ): Promise<VehicleListItem[]> {
   const q = rawQuery.trim();
   if (q.length === 0) return [];
@@ -65,22 +70,117 @@ export async function searchVehicles(
   const stripped = stripPunctuation(q);
   const probe = stripped.length >= 2 ? stripped : q;
   const ilike = `%${q}%`;
+  const strippedIlike = `%${stripped}%`;
+  const filterMake = make && make !== "all" ? make : null;
+  const searchVin = stripped.length >= 3;
 
+  if (sort === "plate") {
+    return db.$queryRaw<VehicleListItem[]>`
+      SELECT id, vin, plate, make, model, "modelYear", engine,
+             "customerName", "customerPhone", archived,
+             "createdAt", "updatedAt"
+      FROM "Vehicle"
+      WHERE archived = ${archived}
+        AND (${filterMake}::text IS NULL OR make = ${filterMake})
+        AND (
+          plate ILIKE ${ilike}
+          OR regexp_replace(plate, '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+          OR "customerName" ILIKE ${ilike}
+          OR similarity(regexp_replace(plate, '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+          OR (
+            ${searchVin}::boolean = true
+            AND (
+              vin ILIKE ${ilike}
+              OR regexp_replace(vin, '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+              OR similarity(regexp_replace(vin, '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+            )
+          )
+        )
+      ORDER BY plate ASC, "updatedAt" DESC
+      LIMIT ${SEARCH_LIMIT}
+    `;
+  }
+
+  if (sort === "make_model") {
+    return db.$queryRaw<VehicleListItem[]>`
+      SELECT id, vin, plate, make, model, "modelYear", engine,
+             "customerName", "customerPhone", archived,
+             "createdAt", "updatedAt"
+      FROM "Vehicle"
+      WHERE archived = ${archived}
+        AND (${filterMake}::text IS NULL OR make = ${filterMake})
+        AND (
+          plate ILIKE ${ilike}
+          OR regexp_replace(plate, '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+          OR "customerName" ILIKE ${ilike}
+          OR similarity(regexp_replace(plate, '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+          OR (
+            ${searchVin}::boolean = true
+            AND (
+              vin ILIKE ${ilike}
+              OR regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+              OR similarity(regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+            )
+          )
+        )
+      ORDER BY make ASC, model ASC, "updatedAt" DESC
+      LIMIT ${SEARCH_LIMIT}
+    `;
+  }
+
+  if (sort === "oldest") {
+    return db.$queryRaw<VehicleListItem[]>`
+      SELECT id, vin, plate, make, model, "modelYear", engine,
+             "customerName", "customerPhone", archived,
+             "createdAt", "updatedAt"
+      FROM "Vehicle"
+      WHERE archived = ${archived}
+        AND (${filterMake}::text IS NULL OR make = ${filterMake})
+        AND (
+          plate ILIKE ${ilike}
+          OR regexp_replace(plate, '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+          OR "customerName" ILIKE ${ilike}
+          OR similarity(regexp_replace(plate, '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+          OR (
+            ${searchVin}::boolean = true
+            AND (
+              vin ILIKE ${ilike}
+              OR regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+              OR similarity(regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+            )
+          )
+        )
+      ORDER BY "updatedAt" ASC
+      LIMIT ${SEARCH_LIMIT}
+    `;
+  }
+
+  // Default: by similarity score
   return db.$queryRaw<VehicleListItem[]>`
     SELECT id, vin, plate, make, model, "modelYear", engine,
            "customerName", "customerPhone", archived,
            "createdAt", "updatedAt"
     FROM "Vehicle"
-    WHERE archived = false
+    WHERE archived = ${archived}
+      AND (${filterMake}::text IS NULL OR make = ${filterMake})
       AND (
         plate ILIKE ${ilike}
-        OR vin   ILIKE ${ilike}
+        OR regexp_replace(plate, '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+        OR "customerName" ILIKE ${ilike}
         OR similarity(regexp_replace(plate, '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
-        OR similarity(regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+        OR (
+          ${searchVin}::boolean = true
+          AND (
+            vin ILIKE ${ilike}
+            OR regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g') ILIKE ${strippedIlike}
+            OR similarity(regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g'), ${probe}) > 0.3
+          )
+        )
       )
     ORDER BY GREATEST(
         similarity(regexp_replace(plate, '[^A-Za-z0-9]', '', 'g'), ${probe}),
-        similarity(regexp_replace(vin,   '[^A-Za-z0-9]', '', 'g'), ${probe})
+        CASE WHEN ${searchVin}::boolean = true THEN similarity(regexp_replace(vin, '[^A-Za-z0-9]', '', 'g'), ${probe}) ELSE 0 END,
+        similarity("customerName", ${q})
       ) DESC,
       "updatedAt" DESC
     LIMIT ${SEARCH_LIMIT}
@@ -88,11 +188,30 @@ export async function searchVehicles(
 }
 
 export async function listVehicles({
-  includeArchived = false,
-}: { includeArchived?: boolean } = {}) {
+  archived = false,
+  make,
+  sort,
+}: { archived?: boolean; make?: string; sort?: string } = {}) {
+  const where: any = { archived };
+  if (make && make !== "all") {
+    where.make = make;
+  }
+
+  let orderBy: any = { updatedAt: "desc" };
+  if (sort === "plate") {
+    orderBy = { plate: "asc" };
+  } else if (sort === "make_model") {
+    orderBy = [
+      { make: "asc" },
+      { model: "asc" },
+    ];
+  } else if (sort === "oldest") {
+    orderBy = { updatedAt: "asc" };
+  }
+
   return db.vehicle.findMany({
-    where: includeArchived ? {} : { archived: false },
-    orderBy: { updatedAt: "desc" },
+    where,
+    orderBy,
     select: listSelect,
     take: 200,
   });

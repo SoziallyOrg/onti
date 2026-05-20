@@ -17,7 +17,7 @@ export default async function NewVehiclePage() {
 
   return (
     <main className="container max-w-2xl py-8">
-      <Button asChild variant="ghost" size="sm" className="mb-4">
+      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-3">
         <Link href="/vehicles">{t.vehicles.backToList}</Link>
       </Button>
 

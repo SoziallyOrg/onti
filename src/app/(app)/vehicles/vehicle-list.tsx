@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { VehicleListItem } from "@/lib/vehicles";
 import { formatDate } from "@/lib/format";
 import { ChevronRight } from "lucide-react";
+import { t } from "@/i18n/nl";
 
 /**
  * Renders the result rows on /vehicles. Server component — no client
@@ -32,11 +33,24 @@ export function VehicleList({ vehicles }: { vehicles: VehicleListItem[] }) {
                     <span className="text-fg-subtle"> · {v.modelYear}</span>
                   ) : null}
                 </span>
+                {v.archived && (
+                  <span className="inline-flex items-center rounded-md bg-warning/10 px-2 py-0.5 text-xs font-semibold text-warning border border-warning/20">
+                    {t.vehicles.archived}
+                  </span>
+                )}
               </div>
               {/* Row 2: customer + meta */}
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-fg-subtle">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-fg-subtle">
                 <span>{v.customerName}</span>
-                <span className="hidden font-mono sm:inline">{v.vin}</span>
+                {v.vin && (
+                  <>
+                    <span className="text-fg-subtle/30 select-none">•</span>
+                    <span className="font-mono text-[10px] uppercase text-fg-subtle/80 tracking-wider">
+                      {v.vin}
+                    </span>
+                  </>
+                )}
+                <span className="text-fg-subtle/30 select-none">•</span>
                 <span>{formatDate(v.updatedAt)}</span>
               </div>
             </div>

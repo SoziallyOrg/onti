@@ -115,14 +115,60 @@ export async function createMaintenanceEntry(
     return { ok: false, error: t.errors.notFound };
   }
 
+  const files = formData
+    .getAll("photos")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (files.length > MAX_PHOTOS_PER_ENTRY) {
+    return {
+      ok: false,
+      error: t.maintenance.photos.tooMany,
+    };
+  }
+
+  for (const f of files) {
+    if (f.size > MAX_UPLOAD_BYTES) {
+      return { ok: false, error: t.maintenance.photos.tooLarge };
+    }
+    if (!ALLOWED_MIME_TYPES.has(f.type)) {
+      return { ok: false, error: t.maintenance.photos.wrongType };
+    }
+  }
+
   const { parts, ...entryData } = parsed.data;
-  await db.maintenanceEntry.create({
+
+  const entry = await db.maintenanceEntry.create({
     data: {
       ...entryData,
       createdById: me.id,
       parts: { create: parts },
     },
   });
+
+  const uploadedFilenames: string[] = [];
+  try {
+    for (const f of files) {
+      const filename = `${randomUUID()}.jpg`;
+      const processed = await saveProcessedPhoto(f, filename);
+      uploadedFilenames.push(processed.filename);
+      await db.photo.create({
+        data: {
+          maintenanceId: entry.id,
+          filename: processed.filename,
+          mimeType: processed.mimeType,
+          sizeBytes: processed.sizeBytes,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Failed to upload photos during creation:", error);
+    await Promise.all(uploadedFilenames.map((name) => deletePhotoFile(name).catch(() => {})));
+    await db.maintenanceEntry.delete({ where: { id: entry.id } }).catch(() => {});
+    return {
+      ok: false,
+      error: t.maintenance.photos.uploadError,
+    };
+  }
 
   revalidatePath(`/vehicles/${parsed.data.vehicleId}`);
   revalidatePath("/");

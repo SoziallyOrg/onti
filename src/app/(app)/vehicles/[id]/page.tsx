@@ -20,6 +20,8 @@ import {
 import { formatDate } from "@/lib/format";
 import { t } from "@/i18n/nl";
 import { toggleArchiveVehicle } from "../actions";
+import { PrintButton } from "@/components/print-button";
+import { ServicePredictionCard } from "@/components/service-prediction";
 
 type Params = Promise<{ id: string }>;
 
@@ -43,20 +45,50 @@ export default async function VehicleDetailPage({
   const entries = await listEntriesForVehicle(v.id);
 
   return (
-    <main className="container max-w-3xl py-8">
-      <Button asChild variant="ghost" size="sm" className="mb-4">
+    <main className="container py-8">
+      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-3 no-print">
         <Link href="/vehicles">{t.vehicles.backToList}</Link>
       </Button>
 
-      <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+      <header className="mb-6">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h1 className="font-mono">{v.plate}</h1>
             {v.archived ? (
               <span className="bg-fg-subtle/20 rounded px-2 py-0.5 text-xs uppercase tracking-wide text-fg-subtle">
                 {t.vehicles.archived}
               </span>
             ) : null}
+            <div className="flex items-center gap-1.5 ml-1 no-print">
+              <Button asChild variant="outline" size="sm" className="h-7 px-2.5 text-xs">
+                <Link href={`/vehicles/${v.id}/edit`}>
+                  <Pencil className="h-3.5 w-3.5" aria-hidden />
+                  <span className="sr-only sm:not-sr-only sm:ml-1.5">{t.vehicles.edit}</span>
+                </Link>
+              </Button>
+              <form action={toggleArchiveVehicle}>
+                <input type="hidden" name="id" value={v.id} />
+                <input type="hidden" name="archived" value={String(!v.archived)} />
+                <Button
+                  type="submit"
+                  variant={v.archived ? "primary" : "outline"}
+                  size="sm"
+                  className="h-7 px-2.5 text-xs"
+                >
+                  {v.archived ? (
+                    <>
+                      <ArchiveRestore className="h-3.5 w-3.5" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:ml-1.5">{t.vehicles.unarchive}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="h-3.5 w-3.5" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:ml-1.5">{t.vehicles.archive}</span>
+                    </>
+                  )}
+                </Button>
+              </form>
+            </div>
           </div>
           <p className="mt-1 text-fg-subtle">
             {v.make} {v.model}
@@ -64,64 +96,41 @@ export default async function VehicleDetailPage({
             {v.engine ? ` · ${v.engine}` : ""}
           </p>
         </div>
-
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline" size="sm">
-            <Link href={`/vehicles/${v.id}/edit`}>
-              <Pencil className="h-4 w-4" aria-hidden /> {t.vehicles.edit}
-            </Link>
-          </Button>
-          <form action={toggleArchiveVehicle}>
-            <input type="hidden" name="id" value={v.id} />
-            <input type="hidden" name="archived" value={String(!v.archived)} />
-            <Button
-              type="submit"
-              variant={v.archived ? "primary" : "outline"}
-              size="sm"
-            >
-              {v.archived ? (
-                <>
-                  <ArchiveRestore className="h-4 w-4" aria-hidden />{" "}
-                  {t.vehicles.unarchive}
-                </>
-              ) : (
-                <>
-                  <Archive className="h-4 w-4" aria-hidden />{" "}
-                  {t.vehicles.archive}
-                </>
-              )}
-            </Button>
-          </form>
-        </div>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Identificatie</CardTitle>
           </CardHeader>
-          <dl className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 text-sm">
-            <dt className="text-fg-subtle">{t.vehicles.fields.plate}</dt>
-            <dd className="font-mono">{v.plate}</dd>
-            <dt className="text-fg-subtle">{t.vehicles.fields.vin}</dt>
-            <dd className="font-mono">{v.vin}</dd>
-            <dt className="text-fg-subtle">{t.vehicles.fields.make}</dt>
-            <dd>{v.make}</dd>
-            <dt className="text-fg-subtle">{t.vehicles.fields.model}</dt>
-            <dd>{v.model}</dd>
+          <dl className="grid grid-cols-1 text-sm sm:grid-cols-[auto,1fr] sm:gap-x-4 sm:gap-y-2">
+            <div className="flex justify-between items-start py-2.5 border-b border-border/40 gap-4 sm:contents sm:py-0 sm:border-0">
+              <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.plate}</dt>
+              <dd className="font-mono font-semibold text-fg text-right sm:text-left">{v.plate}</dd>
+            </div>
+            <div className="flex justify-between items-start py-2.5 border-b border-border/40 gap-4 sm:contents sm:py-0 sm:border-0">
+              <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.vin}</dt>
+              <dd className="font-mono font-medium text-fg text-right break-all sm:text-left">{v.vin}</dd>
+            </div>
+            <div className="flex justify-between items-start py-2.5 border-b border-border/40 gap-4 sm:contents sm:py-0 sm:border-0">
+              <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.make}</dt>
+              <dd className="font-medium text-fg text-right sm:text-left">{v.make}</dd>
+            </div>
+            <div className="flex justify-between items-start py-2.5 border-b border-border/40 gap-4 sm:contents sm:py-0 sm:border-0">
+              <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.model}</dt>
+              <dd className="font-medium text-fg text-right sm:text-left">{v.model}</dd>
+            </div>
             {v.engine ? (
-              <>
-                <dt className="text-fg-subtle">{t.vehicles.fields.engine}</dt>
-                <dd>{v.engine}</dd>
-              </>
+              <div className="flex justify-between items-start py-2.5 border-b border-border/40 gap-4 sm:contents sm:py-0 sm:border-0">
+                <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.engine}</dt>
+                <dd className="font-medium text-fg text-right sm:text-left">{v.engine}</dd>
+              </div>
             ) : null}
             {v.modelYear ? (
-              <>
-                <dt className="text-fg-subtle">
-                  {t.vehicles.fields.modelYear}
-                </dt>
-                <dd>{v.modelYear}</dd>
-              </>
+              <div className="flex justify-between items-start py-2.5 border-b border-border/40 last:border-0 gap-4 sm:contents sm:py-0 sm:border-0">
+                <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.modelYear}</dt>
+                <dd className="font-medium text-fg text-right sm:text-left">{v.modelYear}</dd>
+              </div>
             ) : null}
           </dl>
         </Card>
@@ -130,24 +139,24 @@ export default async function VehicleDetailPage({
           <CardHeader>
             <CardTitle className="text-lg">Klant</CardTitle>
           </CardHeader>
-          <dl className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 text-sm">
-            <dt className="text-fg-subtle">{t.vehicles.fields.customerName}</dt>
-            <dd>{v.customerName}</dd>
+          <dl className="grid grid-cols-1 text-sm sm:grid-cols-[auto,1fr] sm:gap-x-4 sm:gap-y-2">
+            <div className="flex justify-between items-start py-2.5 border-b border-border/40 gap-4 sm:contents sm:py-0 sm:border-0">
+              <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.customerName}</dt>
+              <dd className="font-medium text-fg text-right sm:text-left">{v.customerName}</dd>
+            </div>
             {v.customerPhone ? (
-              <>
-                <dt className="text-fg-subtle">
-                  {t.vehicles.fields.customerPhone}
-                </dt>
-                <dd>
+              <div className="flex justify-between items-start py-2.5 border-b border-border/40 last:border-0 gap-4 sm:contents sm:py-0 sm:border-0">
+                <dt className="text-fg-subtle shrink-0">{t.vehicles.fields.customerPhone}</dt>
+                <dd className="text-right sm:text-left">
                   <a
                     href={`tel:${v.customerPhone}`}
-                    className="inline-flex items-center gap-1.5 text-info hover:underline"
+                    className="inline-flex items-center gap-1.5 text-info hover:underline font-semibold"
                   >
                     <Phone className="h-3.5 w-3.5" aria-hidden />
                     {v.customerPhone}
                   </a>
                 </dd>
-              </>
+              </div>
             ) : null}
           </dl>
           <p className="mt-4 text-xs text-fg-subtle">
@@ -157,6 +166,8 @@ export default async function VehicleDetailPage({
               : "."}
           </p>
         </Card>
+
+        <ServicePredictionCard entries={entries} />
       </div>
 
       <section className="mt-6">
@@ -165,11 +176,14 @@ export default async function VehicleDetailPage({
             <Wrench className="h-5 w-5 text-primary" aria-hidden />
             {t.vehicles.detail.timelineTitle}
           </h2>
-          <Button asChild size="sm">
-            <Link href={`/vehicles/${v.id}/maintenance/new`}>
-              <Plus className="h-4 w-4" aria-hidden /> {t.maintenance.new}
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2 no-print">
+            <PrintButton />
+            <Button asChild size="sm">
+              <Link href={`/vehicles/${v.id}/maintenance/new`}>
+                <Plus className="h-4 w-4" aria-hidden /> {t.maintenance.new}
+              </Link>
+            </Button>
+          </div>
         </header>
 
         <MaintenanceTimeline

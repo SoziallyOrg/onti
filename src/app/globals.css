@@ -78,3 +78,54 @@
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
   }
 }
+
+@media print {
+  /* Hide headers, navigation, footers, and interactive action buttons */
+  .no-print,
+  button,
+  nav,
+  header form,
+  .top-nav,
+  .mobile-nav,
+  a[href*="/edit"],
+  a[href*="/new"],
+  a[href="/vehicles"] {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  main.container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Force print backgrounds for colored headers or badges */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Style lists and cards cleanly on paper */
+  .card,
+  .rounded-lg,
+  ul {
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    page-break-inside: avoid;
+  }
+
+  /* Page break rules for maintenance timeline items */
+  li {
+    page-break-inside: avoid;
+  }
+}

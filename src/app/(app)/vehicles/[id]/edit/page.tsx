@@ -24,7 +24,7 @@ export default async function EditVehiclePage({ params }: { params: Params }) {
 
   return (
     <main className="container max-w-2xl py-8">
-      <Button asChild variant="ghost" size="sm" className="mb-4">
+      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-3">
         <Link href={`/vehicles/${v.id}`}>{t.vehicles.backToVehicle}</Link>
       </Button>
 

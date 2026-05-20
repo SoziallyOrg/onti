@@ -59,7 +59,7 @@ export function MaintenanceTimeline({
 
               {/* Action buttons: min-h-11 (44px) tap target per Apple HIG */}
               {canEdit(e) ? (
-                <div className="flex gap-1">
+                <div className="flex items-center gap-1">
                   <Button
                     asChild
                     variant="ghost"

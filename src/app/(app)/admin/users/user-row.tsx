@@ -154,3 +154,136 @@ export function UserRow({ user, isSelf }: { user: RowUser; isSelf: boolean }) {
     </>
   );
 }
+
+export function UserCard({ user, isSelf }: { user: RowUser; isSelf: boolean }) {
+  const [pending, startTransition] = useTransition();
+  const [showReset, setShowReset] = useState(false);
+  const [resetMsg, setResetMsg] = useState<string | null>(null);
+  const [resetErr, setResetErr] = useState<string | null>(null);
+  const [actionErr, setActionErr] = useState<string | null>(null);
+
+  const toggleActive = () => {
+    setActionErr(null);
+    const fd = new FormData();
+    fd.set("userId", user.id);
+    fd.set("active", String(!user.active));
+    startTransition(async () => {
+      const result = await setActive({ ok: true }, fd);
+      if (!result.ok) setActionErr(result.error);
+    });
+  };
+
+  const submitReset = (formData: FormData) => {
+    setResetMsg(null);
+    setResetErr(null);
+    formData.set("userId", user.id);
+    startTransition(async () => {
+      const result = await resetPassword({ ok: true }, formData);
+      if (result.ok) {
+        setResetMsg(result.message ?? t.users.save);
+        setShowReset(false);
+      } else {
+        setResetErr(result.error);
+      }
+    });
+  };
+
+  return (
+    <div className="rounded-xl border border-border bg-bg p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div>
+          <div className="font-semibold text-base text-fg flex items-center gap-1.5">
+            {user.name}
+            {isSelf ? (
+              <span className="text-xs text-fg-subtle font-normal">(jij)</span>
+            ) : null}
+          </div>
+          <div className="text-sm text-fg-subtle mt-0.5">{user.email}</div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-xs font-semibold px-2 py-0.5 bg-border/60 rounded text-fg">
+            {user.role === "ADMIN" ? t.users.roleAdmin : t.users.roleMechanic}
+          </span>
+          {user.active ? (
+            <span className="inline-flex items-center gap-1 text-xs text-fg font-medium">
+              <span className="h-2 w-2 rounded-full bg-success" aria-hidden />
+              {t.users.active}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 text-xs text-fg-subtle">
+              <span className="h-2 w-2 rounded-full bg-fg-subtle" aria-hidden />
+              {t.users.inactive}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          className="flex-1 min-w-[120px]"
+          onClick={() => setShowReset((v) => !v)}
+          disabled={pending}
+        >
+          {t.users.resetPassword}
+        </Button>
+        <Button
+          size="sm"
+          variant={user.active ? "outline" : "primary"}
+          className="flex-1 min-w-[120px]"
+          onClick={toggleActive}
+          disabled={pending || (isSelf && user.active)}
+          title={
+            isSelf && user.active ? t.users.cannotDeactivateSelf : undefined
+          }
+        >
+          {user.active ? t.users.deactivate : t.users.activate}
+        </Button>
+      </div>
+
+      {resetMsg ? (
+        <p className="mt-2 text-sm text-success font-medium">{resetMsg}</p>
+      ) : null}
+      {actionErr ? (
+        <p className="mt-2 text-sm text-danger font-medium">{actionErr}</p>
+      ) : null}
+
+      {showReset ? (
+        <form
+          action={submitReset}
+          className="mt-4 border-t border-border pt-4 space-y-3"
+        >
+          <div className="space-y-1">
+            <Label htmlFor={`mobile-new-pw-${user.id}`}>
+              Nieuw wachtwoord (min. 10 tekens)
+            </Label>
+            <Input
+              id={`mobile-new-pw-${user.id}`}
+              name="password"
+              type="text"
+              autoComplete="new-password"
+              required
+              minLength={10}
+              className="h-10"
+            />
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowReset(false)}
+            >
+              {t.users.cancel}
+            </Button>
+            <Button type="submit" size="sm" disabled={pending}>
+              {pending ? t.users.creating : t.users.save}
+            </Button>
+          </div>
+          {resetErr ? <p className="text-sm text-danger mt-1">{resetErr}</p> : null}
+        </form>
+      ) : null}
+    </div>
+  );
+}

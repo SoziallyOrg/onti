@@ -17,7 +17,7 @@ export default async function NewUserPage() {
 
   return (
     <main className="container max-w-xl py-8">
-      <Button asChild variant="ghost" size="sm" className="mb-4">
+      <Button asChild variant="ghost" size="sm" className="mb-4 -ml-3">
         <Link href="/admin/users">← {t.users.title}</Link>
       </Button>
 
